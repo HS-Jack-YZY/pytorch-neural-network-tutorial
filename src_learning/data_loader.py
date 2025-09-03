@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.datasets import make_classification, make_regression
+from sklearn.datasets import load_iris, make_classification, make_regression
 
 
 def generate_regression_data(n_samples=1000, n_features=1, noise=0.1, random_state=42):
@@ -22,7 +22,7 @@ def generate_regression_data(n_samples=1000, n_features=1, noise=0.1, random_sta
     return X.astype(np.float32), y.astype(np.float32)
 
 
-def gererate_classification_data(
+def generate_classification_data(
     n_samples=1000, n_features=2, n_classes=2, n_cluster=1, random_state=42
 ):
     X, y = make_classification(
@@ -35,3 +35,10 @@ def gererate_classification_data(
         random_state=random_state,
     )
     return X.astype(np.float32), y.astype(np.float32)
+
+
+def generate_iris_data():
+    iris = load_iris()
+    X = iris.data.astype(np.float32)
+    y = iris.target.astype(np.float32)
+    return X, y, iris.feature_names, iris.target_names
