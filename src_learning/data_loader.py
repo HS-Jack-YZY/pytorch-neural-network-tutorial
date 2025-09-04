@@ -1,7 +1,9 @@
 import numpy as np
+import torch
 from sklearn.datasets import load_iris, make_classification, make_regression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from torch.utils.data import DataLoader, TensorDataset
 
 
 def generate_regression_data(n_samples=1000, n_features=1, noise=0.1, random_state=42):
@@ -80,3 +82,26 @@ def preprocess_data(X, y, test_size=0.2, random_state=42, scale_features=True):
         X_test = scaler.transform(X_test)
 
     return X_train, X_test, y_train, y_test, scaler
+
+
+def create_data_loaders(X_train, X_test, y_train, y_test, batch_size=64, shuffle=True):
+    # 转化为张量
+    X_train_tensor = torch.FloatTensor(X_train)
+    X_test_tensor = torch.FloatTensor(X_test)
+    y_train_tensor = (
+        torch.FloatTensor(y_train)
+        if y_train.dtype == np.float32
+        else torch.LongTensor(y_train)
+    )
+    y_test_tensor = (
+        torch.FloatTensor(y_test)
+        if y_test.dtype == np.float32
+        else torch.LongTensor(y_test)
+    )
+
+    train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+    test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    return train_loader, test_loader
