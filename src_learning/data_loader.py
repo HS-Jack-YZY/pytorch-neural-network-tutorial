@@ -42,3 +42,24 @@ def generate_iris_data():
     X = iris.data.astype(np.float32)
     y = iris.target.astype(np.float32)
     return X, y, iris.feature_names, iris.target_names
+
+
+def generate_spiral_data(n_samples=200, n_classes=2, random_state=42):
+    np.random.seed(random_state)
+    X = np.zeros((n_samples * n_classes, 2))
+    y = np.zeros(n_samples * n_classes, dtype=np.int64)
+
+    for n_class in range(n_classes):
+        theta = np.linspace(0, 4 * np.pi, n_samples) + n_class * 4 * np.pi / n_classes
+        radius = (
+            theta / (4 * np.pi) + np.random.randn(n_samples) * 0.1
+        )  # np.random.normal(0, 1, n_samples) * 0.1
+
+        start_idx = n_class * n_samples
+        end_idx = (n_class + 1) * n_samples
+
+        X[start_idx:end_idx, 0] = radius * np.cos(theta)
+        X[start_idx:end_idx, 1] = radius * np.sin(theta)
+        y[start_idx:end_idx] = n_class
+
+    return X.astype(np.float32), y
