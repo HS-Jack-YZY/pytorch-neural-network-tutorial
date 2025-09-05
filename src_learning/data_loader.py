@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn.datasets import load_iris, make_classification, make_regression
@@ -105,3 +106,36 @@ def create_data_loaders(X_train, X_test, y_train, y_test, batch_size=64, shuffle
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     return train_loader, test_loader
+
+
+def visualize_data(X, y, title="数据可视化", feature_names=None):
+    # 检测是否为二维图表
+    if X.shape[1] != 2:
+        print("只能可视化二维图标")
+        return
+
+    plt.figure(figsize=(10, 8))
+    # 统计类别数量
+    unique_classes = np.unique(y)
+    # 颜色映射
+    colors = plt.cm.Set1(np.linspace(0, 1, len(unique_classes)))
+
+    # 开始画散点图
+    for i, class_label in enumerate(unique_classes):
+        # 将同一类点全部找出来
+        mask = y == class_label
+        plt.scatter(
+            X[mask, 0],
+            X[mask, 1],
+            c=colors[i],
+            alpha=0.7,
+            s=50,
+            label=f"类别 {class_label}",
+        )
+
+    plt.title(title, fontsize=16)
+    plt.xlabel(feature_names[0] if feature_names else "特征 1", fontsize=12)
+    plt.ylabel(feature_names[1] if feature_names else "特征 2", fontsize=12)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
